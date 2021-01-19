@@ -1,17 +1,35 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom";
+import configureStore from "./store/configureStore";
+import App from "./App";
+import { Provider } from "react-redux";
+import { startSetUser } from "./actions/userActions";
+import { startGetCustomer } from "./actions/customersActions";
+import { startGetDepartment } from "./actions/departmentActions";
+import { startGetEmployees } from "./actions/employeesAction";
+import { startGetTicket } from "./actions/ticketsAction";
+import './App.css';
 
-ReactDOM.render(
-  <React.StrictMode>
+const store = configureStore();
+
+store.subscribe(() => {
+  console.log(store.getState());
+});
+
+console.log(localStorage.getItem("authToken"), "Token");
+
+if (localStorage.getItem("authToken")) {
+  store.dispatch(startSetUser());
+  store.dispatch(startGetCustomer());
+  store.dispatch(startGetDepartment());
+  store.dispatch(startGetEmployees());
+  store.dispatch(startGetTicket());
+}
+
+const jsx = (
+  <Provider store={store}>
     <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+  </Provider>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+ReactDOM.render(jsx, document.getElementById("root"));
